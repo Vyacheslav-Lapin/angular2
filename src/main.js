@@ -6,9 +6,16 @@ const info = vasyaPupkin.getInfo();
 const fedyaBarigin = new Employee("Фёдор Барыгин", 115, "manager");
 // document.querySelector("div#out").innerHTML += `<br/>${fedyaBarigin.getInfo()}`;
 
+println(
+    Employee.averageSalary()
+);
+
 Employee.remove(vasyaPupkin);
 
-for (const employee of Employee.list) {
+for (const employee of Employee.list)
+    println(employee.getInfo());
+
+function println(text) {
     document.querySelector("div#out").innerHTML +=
-        `${employee.getInfo()}<br/>`;
+        `${text}<br/>`;
 }

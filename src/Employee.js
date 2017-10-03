@@ -16,6 +16,13 @@ class Employee extends Person {
         return indexOf;
     }
 
+    static averageSalary() {
+        const employees = this._list;
+        const sum = employees.map(emloyee => emloyee.salary)
+            .reduce((p1, p2) => p1 + p2);
+        return sum / employees.length;
+    }
+
     constructor(name, salary, position) {
         super(name);
         this.salary = salary;
