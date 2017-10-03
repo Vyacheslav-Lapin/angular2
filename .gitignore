@@ -1,0 +1,5 @@
+.gitignore
+.idea
+angular2.iml
+
+node_modules

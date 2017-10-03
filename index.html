@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+<body>
+
+<div id="out"></div>
+
+<script src="src/Person.js"></script>
+<script src="src/Employee.js"></script>
+<script>
+    const vasyaPupkin = new Employee();
+    vasyaPupkin.name = "Вася Пупкин";
+    vasyaPupkin.salary = 50;
+    vasyaPupkin.position = "cleaner";
+    const info = vasyaPupkin.getInfo();
+    const fedyaBarigin = new Employee("Фёдор Барыгин", 115, "manager");
+    // document.querySelector("div#out").innerHTML += `<br/>${fedyaBarigin.getInfo()}`;
+
+    Employee.remove(vasyaPupkin);
+
+    for (const employee of Employee.list) {
+        document.querySelector("div#out").innerHTML +=
+            `${employee.getInfo()}<br/>`;
+    }
+
+</script>
+
+</body>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
-
-    <div id="out"></div>
-
-    <script src="src/Person.js"></script>
-    <script src="src/Employee.js"></script>
-    <script>
-        const person = new Employee();
-        person.name = "Вася Пупкин";
-        person.salary = 50;
-        person.position = "cleaner";
-        const info = person.getInfo();
-        document.querySelector("div#out").innerText += info;
-    </script>
-</body>
 </html>
