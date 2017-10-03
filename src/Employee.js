@@ -2,6 +2,15 @@ const delay = 1000; // todo make module constant
 
 class Employee extends Person {
 
+    constructor(name, salary, position) {
+        super(name);
+        this.salary = salary;
+        this.position = position;
+        this.bonuses = 0;
+
+        Employee._employees.push(this);
+    }
+
     /** @param {Employee} employee */
     static add(employee) {
         return this._employees.push(employee);
@@ -34,18 +43,17 @@ class Employee extends Person {
             .map(employee => employee.total()));
     }
 
+    static *[Symbol.iterator]() {
+        yield* this._employees;
+    }
+
+    static *names() {
+        yield* [...Employee].map(employee => employee.name);
+    }
+
     total() {
         return new Promise(resolve =>
             setTimeout(() => resolve(this.salary + this.bonuses), delay));
-    }
-
-    constructor(name, salary, position) {
-        super(name);
-        this.salary = salary;
-        this.position = position;
-        this.bonuses = 0;
-
-        Employee._employees.push(this);
     }
 
     /** @override */
