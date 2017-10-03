@@ -51,6 +51,21 @@ class Employee extends Person {
         yield* [...Employee].map(employee => employee.name);
     }
 
+    /** @param {function(string)} print */
+    static getAllInfoAsync(print) {
+        for (let employee of Employee) {
+            print(`Товарищем ${employee.name} получено оклада ${employee.salary}`);
+
+            employee.bonus()
+                .then(bonus => `Товарищем ${employee.name} получено бонусов ${bonus}`)
+                .then(print);
+
+            employee.total()
+                .then(total => `Товарищем ${employee.name} получено всего ${total}`)
+                .then(print)
+        }
+    }
+
     total() {
         return new Promise(resolve =>
             setTimeout(() => resolve(this.salary + this.bonuses), delay));
@@ -61,6 +76,7 @@ class Employee extends Person {
         return `${super.getInfo()}, working on ${this.position} position`;
     }
 
+    /** @returns {Promise<number>} */
     bonus() {
         const {random, round} = Math;
 
