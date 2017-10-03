@@ -1,34 +1,51 @@
+const delay = 1000; // todo make module constant
+
 class Employee extends Person {
 
     /** @param {Employee} employee */
     static add(employee) {
-        return this._list.push(employee);
+        return this._employees.push(employee);
     }
 
     static get list() {
-        return this._list.slice();
+        return this._employees.slice();
     }
 
     static remove(employee) {
-        const indexOf = this._list.indexOf(employee);
+        const indexOf = this._employees.indexOf(employee);
         if (indexOf > -1)
-            this._list.splice(indexOf, 1);
+            this._employees.splice(indexOf, 1);
         return indexOf;
     }
 
     static averageSalary() {
-        const employees = this._list;
-        const sum = employees.map(emloyee => emloyee.salary)
+        const employees = this._employees;
+        const sum = employees.map(employee => employee.salary)
             .reduce((p1, p2) => p1 + p2);
         return sum / employees.length;
+    }
+
+    /**
+     * @returns {Promise<Array<number>>} total income of every emloyees
+     */
+    static totalIncome() {
+        const employees = this._employees;
+        return Promise.all(employees
+            .map(employee => employee.total()));
+    }
+
+    total() {
+        return new Promise(resolve =>
+            setTimeout(() => resolve(this.salary + this.bonuses), delay));
     }
 
     constructor(name, salary, position) {
         super(name);
         this.salary = salary;
         this.position = position;
+        this.bonuses = 0;
 
-        Employee._list.push(this);
+        Employee._employees.push(this);
     }
 
     /** @override */
@@ -37,13 +54,14 @@ class Employee extends Person {
     }
 
     bonus() {
-        const delay = 1000;
         const {random, round} = Math;
 
         return new Promise(resolve =>
-            setTimeout(() => resolve(round(random() * 1000)), delay));
+            setTimeout(() => resolve(round(random() * 1000)), delay))
+            .then(bonus => this.bonuses += bonus);
     }
 }
 
 /** @type Array<Employee> */
-Employee._list = [];
+Employee._employees = [];
+

@@ -23,6 +23,11 @@ for (const employee of Employee.list) {
     println(employee.getInfo());
 }
 
+Employee.totalIncome()
+    .then(incomes => incomes.reduce((p1, p2) => p1 + p2))
+    .then(totalIncome => println(
+        `Суммарные выплаты составили ${totalIncome}`));
+
 function println(text) {
     document.querySelector("div#out").innerHTML +=
         `${text}<br/>`;
