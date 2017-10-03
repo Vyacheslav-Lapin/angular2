@@ -9,9 +9,12 @@
     <div id="out"></div>
 
     <script src="src/Person.js"></script>
+    <script src="src/Employee.js"></script>
     <script>
-        const person = new Person();
+        const person = new Employee();
         person.name = "Вася Пупкин";
+        person.salary = 50;
+        person.position = "cleaner";
         const info = person.getInfo();
         document.querySelector("div#out").innerText += info;
     </script>
