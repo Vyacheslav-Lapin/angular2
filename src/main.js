@@ -12,8 +12,16 @@ println(
 
 Employee.remove(vasyaPupkin);
 
-for (const employee of Employee.list)
+const printBonus = ({name}, bonus) =>
+    println(
+        `Работник ${name}
+        получает бонус в размере ${bonus} долларов`);
+
+for (const employee of Employee.list) {
+    employee.bonus()
+        .then(bonus => printBonus(employee, bonus));
     println(employee.getInfo());
+}
 
 function println(text) {
     document.querySelector("div#out").innerHTML +=

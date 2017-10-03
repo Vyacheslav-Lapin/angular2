@@ -35,6 +35,14 @@ class Employee extends Person {
     getInfo() {
         return `${super.getInfo()}, working on ${this.position} position`;
     }
+
+    bonus() {
+        const delay = 1000;
+        const {random, round} = Math;
+
+        return new Promise(resolve =>
+            setTimeout(() => resolve(round(random() * 1000)), delay));
+    }
 }
 
 /** @type Array<Employee> */
