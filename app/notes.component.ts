@@ -12,11 +12,22 @@ interface Note {
             <li *ngFor="let note of notes">
                 {{note.text}}
             </li>
-        </ul>`
+        </ul>
+        <textarea [(ngModel)]="text"></textarea>
+        <button (click)="add()">Add</button>`
 })
 export default class NotesComponent {
+
+    text: string;
+
     notes: Array<Note> = [
         {text:"Note one"},
         {text:"Note two"},
     ];
+
+    add() {
+        let note = { text: this.text }
+        this.notes.push(note);
+        this.text = "";
+    }
 }
