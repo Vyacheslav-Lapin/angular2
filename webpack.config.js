@@ -11,6 +11,14 @@ module.exports = {
         filename: "[name].js"
     },
 
+    resolve: {
+        extensions: [
+            '.js',
+            '.ts',
+            '.tsx'
+        ]
+    },
+
     devServer: {
         contentBase: path.join(__dirname, "dist"),
         compress: true,
@@ -33,3 +41,14 @@ module.exports = {
     watch: true,
     devtool: 'source-map'
 };
+
+module.loaders = [
+    {
+        test: /\.tsx$/,
+        exclude: /node_modules|typings/,
+        loaders: [
+            'ts'
+        ]
+    },
+    // More loaders
+];
