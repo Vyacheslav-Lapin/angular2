@@ -1,3 +1,5 @@
+require("babel-core/register");
+require("babel-polyfill");
 import Employee from './Employee';
 
 const vasyaPupkin = new Employee();
