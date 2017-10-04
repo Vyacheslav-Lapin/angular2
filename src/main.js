@@ -1,3 +1,5 @@
+import Employee from './Employee';
+
 const vasyaPupkin = new Employee();
 vasyaPupkin.name = "Вася Пупкин";
 vasyaPupkin.salary = 50;
@@ -38,3 +40,14 @@ function println(text) {
     document.querySelector("div#out").innerHTML +=
         `${text}<br/>`;
 }
+
+async function printBonus() {
+    println("<br>Async/await version:<br>");
+    for (let e of Employee) {
+        let bonus = await e.bonus();
+        println(`${e.name} bonus: ${bonus} 
+              total: ${e.salary + bonus}<br>`);
+    }
+}
+
+printBonus();

@@ -1,6 +1,7 @@
+import Person from './Person'
 const delay = 1000; // todo make module constant
 
-class Employee extends Person {
+export default class Employee extends Person {
 
     constructor(name, salary, position) {
         super(name);
@@ -43,11 +44,11 @@ class Employee extends Person {
             .map(employee => employee.total()));
     }
 
-    static *[Symbol.iterator]() {
+    static* [Symbol.iterator]() {
         yield* this._employees;
     }
 
-    static *names() {
+    static* names() {
         yield* [...Employee].map(employee => employee.name);
     }
 
@@ -57,6 +58,7 @@ class Employee extends Person {
             print(`Товарищем ${employee.name} получено оклада ${employee.salary}`);
 
             employee.bonus()
+                // .catch(errorMessage => )
                 .then(bonus => `Товарищем ${employee.name} получено бонусов ${bonus}`)
                 .then(print);
 
@@ -67,8 +69,14 @@ class Employee extends Person {
     }
 
     total() {
-        return new Promise(resolve =>
-            setTimeout(() => resolve(this.salary + this.bonuses), delay));
+        return new Promise((resolve, reject) =>
+            setTimeout(() => {
+                const {bonuses} = this;
+                if (typeof bonuses === 'number')
+                    resolve(this.salary + bonuses);
+                else
+                    reject(bonuses);
+            }, delay));
     }
 
     /** @override */
@@ -79,9 +87,15 @@ class Employee extends Person {
     /** @returns {Promise<number>} */
     bonus() {
         const {random, round} = Math;
-
-        return new Promise(resolve =>
-            setTimeout(() => resolve(round(random() * 1000)), delay))
+        return new Promise((resolve, reject) => {
+            const bonus = round(random() * 1000);
+            setTimeout(() => bonus < 700
+                ? resolve(bonus)
+                : reject("Жирновато будет!"), delay);
+        })
+            .catch(errorMessage => {
+                this.bonuses = errorMessage;
+            })
             .then(bonus => this.bonuses += bonus);
     }
 }

@@ -1,4 +1,4 @@
-class Person {
+export default class Person {
     constructor(name) {
         // todo validate
         this._name = name;

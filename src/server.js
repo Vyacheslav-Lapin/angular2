@@ -1,7 +1,6 @@
-var express = require('express');
-var app = express();
-var path = require('path');
-
+const express = require('express');
+const app = express();
+const path = require('path');
 
 app.listen(8080);
 

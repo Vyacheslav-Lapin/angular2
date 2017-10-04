@@ -122,3 +122,36 @@ function run(g) {
     };
     iterate();
 }
+
+// Generators for async calls: add reject processing
+function run(g) {
+    const it = g();
+    let ret;
+    const exception = e => it.throw(e);
+    const iterate = val => {
+        ret = it.next(val);
+        if (!ret.done)
+            ret.value.then(iterate, exception); // wait on the promise
+        else
+            setTimeout(() => iterate(ret.value), 0);  // avoid synchronous recursion
+    };
+    iterate();
+}
+
+// Generators for async calls with exceptions
+function add(x, y) {
+    return new Promise((resolve, reject) =>
+        setTimeout(() => x > 0 ? resolve(x + y) : reject("x should be >0"), 1000));
+}
+
+run(function* main() {
+    try {
+        const res1 = yield add(0, 2);
+    } catch (err) {
+        console.log("Error: " + err);
+        return;
+    }
+
+    const res2 = yield add(res1, 3);
+    console.log(res2);
+});
