@@ -2,7 +2,11 @@ const express = require('express');
 const app = express();
 
 const session = require('express-session');
+const MongoStore = require('connect-mongo/es5')(session);
 app.use(session({
+    store: new MongoStore({
+        url: 'mongodb://localhost:27017/angular_session'
+    }),
     secret: 'angular_tutorial',
     resave: true,
     saveUninitialized: true
@@ -13,7 +17,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
 
 const notes_init = [
     {text: "First note"},
