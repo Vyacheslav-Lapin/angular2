@@ -1,18 +1,20 @@
 const express = require('express');
 const app = express();
 
-const session = require('express-session');
-const MongoStore = require('connect-mongo/es5')(session);
-app.use(session({
-    store: new MongoStore({
-        url: 'mongodb://localhost:27017/angular_session'
-    }),
-    secret: 'angular_tutorial',
-    resave: true,
-    saveUninitialized: true
-}));
+// const session = require('express-session');
+// const MongoStore = require('connect-mongo/es5')(session);
+// app.use(session({
+//     store: new MongoStore({
+//         url: 'mongodb://localhost:27017/angular_session'
+//     }),
+//     secret: 'angular_tutorial',
+//     resave: true,
+//     saveUninitialized: true
+// }));
 
 const path = require('path');
+
+const fs = require('fs');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -25,18 +27,30 @@ const notes_init = [
 ];
 
 app.get("/notes", (req, res) => {
-    console.log("reading notes", req.session.notes);
-    if (!req.session.notes)
-        req.session.notes = notes_init;
-    res.send(req.session.notes);
+    fs.readFile("notes.json", (err, result) => {
+        if (result) {
+            result = "" + result; // convert Object to String
+            //remove last \n in file
+            result = result.substring(0, result.length - 1);
+            result = "[" + result + "]";
+            result = result.split("\n").join(",");
+            res.send(result);
+        } else
+            res.end();
+    });
 });
 
-app.post("/notes", (req, res) => {
+app.post("/notes", function (req, res) {
     const note = req.body;
-    console.log("adding note", req.session.notes);
-    req.session.notes.push(note);
-    res.end();
+    const noteText = JSON.stringify(note) + "\n";
+    fs.appendFile("notes.json", noteText, err => {
+        if (err)
+            console.log("something is wrong");
+        res.end();
+    });
+
 });
+
 
 
 app.use(express.static(path.join(__dirname, '..')));
