@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 
 interface Note {
     text: string;
+    _id: string
 }
 
 @Component({
@@ -11,9 +12,9 @@ interface Note {
     template: `
         Notes list:
         <ul>
-            <li *ngFor="let note of notes; let i=index">
+            <li *ngFor="let note of notes">
                 {{note.text}}
-                <button (click)="remove(i)">remove</button>
+                <button (click)="remove(note._id)">remove</button>
             </li>
         </ul>
         <textarea [(ngModel)]="text"></textarea>
@@ -24,17 +25,18 @@ export default class NotesComponent {
     text: string;
 
     constructor(private http: Http) {
-        this.getNotes().then(notes => {
-            this.notes = notes;
-            console.log(notes);
-        });
+        this.readNotes();
     }
 
+    private readNotes() {
+        this.getNotes()
+            .then(notes => {
+                this.notes = notes;
+                console.log(notes);
+            });
+    }
 
-    notes: Array<Note> = [
-        {text:"Note one"},
-        {text:"Note two"},
-    ];
+    notes: Array<Note> = [];
 
     // URL to web api
     private notesUrl = '/notes';
@@ -45,26 +47,31 @@ export default class NotesComponent {
             .then(response => response.json() as Note[]);
     }
 
-    // keypress(keyEvent: KeyboardEvent) {
-    //     console.log(keyEvent.code);
-    //     if (keyEvent.code === '13')
-    //         this.add();
-    // }
-
     add() {
         let note = {text: this.text};
-        this.notes.push(note);
-        this.addNote(note);
+        // this.notes.push(note);
+        this.addNote(this.text);
         this.text = "";
     }
 
-    addNote(note:Note) {
-        this.http.post(this.notesUrl, note).toPromise()
-            .then(response =>
-                console.log("note sent, response", response));
+    addNote(note: string) {
+        this.http.post(this.notesUrl, note)
+            .toPromise()
+            .then(response => response.json() as Note)
+            .then(note => this.notes.push(note))
+        // .then(note =>
+        //     console.log("note sent, response", response));
     }
 
-    remove(index) {
-        this.notes.splice(index, 1);
+    remove(id: string) {
+        const params: URLSearchParams = new URLSearchParams();
+        params.set('id', id);
+        this.http.delete(this.notesUrl, {search: params})
+            .toPromise()
+            .then(response => {
+                console.log(
+                    `note with id ${id} removed, response`, response);
+                this.readNotes();
+            });
     }
 }
