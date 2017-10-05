@@ -37,7 +37,7 @@ export default class NotesComponent {
     ];
 
     // URL to web api
-    private notesUrl = 'http://localhost:8080/notes';
+    private notesUrl = '/notes';
 
     getNotes(): Promise<Note[]> {
         return this.http.get(this.notesUrl)
@@ -54,11 +54,17 @@ export default class NotesComponent {
     add() {
         let note = {text: this.text};
         this.notes.push(note);
+        this.addNote(note);
         this.text = "";
+    }
+
+    addNote(note:Note) {
+        this.http.post(this.notesUrl, note).toPromise()
+            .then(response =>
+                console.log("note sent, response", response));
     }
 
     remove(index) {
         this.notes.splice(index, 1);
-
     }
 }

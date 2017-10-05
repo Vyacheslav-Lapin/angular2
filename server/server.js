@@ -1,17 +1,42 @@
 const express = require('express');
 const app = express();
+
+const session = require('express-session');
+app.use(session({
+    secret: 'angular_tutorial',
+    resave: true,
+    saveUninitialized: true
+}));
+
 const path = require('path');
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+
+const notes_init = [
+    {text: "First note"},
+    {text: "Second note"},
+    {text: "Third note"}
+];
+
 app.get("/notes", (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    const notes = [
-        {text: "First note"},
-        {text: "Second note"},
-        {text: "Third note"}
-    ];
-    res.send(notes);
+    console.log("reading notes", req.session.notes);
+    if (!req.session.notes)
+        req.session.notes = notes_init;
+    res.send(req.session.notes);
 });
+
+app.post("/notes", (req, res) => {
+    const note = req.body;
+    console.log("adding note", req.session.notes);
+    req.session.notes.push(note);
+    res.end();
+});
+
+
+app.use(express.static(path.join(__dirname, '..')));
 
 app.listen(8080);
 
